@@ -1,0 +1,25 @@
+{
+  "name": "fipe-extractor",
+  "version": "1.0.0",
+  "description": "Extrai Tabela Fipe de HTML -> JSON -> SQL",
+  "main": "main.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "fipe",
+    "tabela",
+    "fipe",
+    "carros",
+    "veiculos",
+    "brazil",
+    "brasil"
+  ],
+  "author": "Stefan Yohansson",
+  "license": "MIT",
+  "dependencies": {
+    "cheerio": "^0.22.0",
+    "jsonfile": "^2.4.0",
+    "request": "^2.79.0"
+  }
+}
