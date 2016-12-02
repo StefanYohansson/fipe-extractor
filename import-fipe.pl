@@ -30,7 +30,7 @@ foreach my $key (keys %$data)
 
         foreach my $ano (keys %{$data->{$key}->{"modelos"}->{$modelo}->{"anos"}})
         {
-            print "INSERT INTO anos (id, modelo_id, nome) VALUES (" . $ano . ", " . $modelo . ", '" . $data->{$key}->{"modelos"}->{$modelo}->{"anos"}->{$ano} . "');" . "\n";
+            print "INSERT INTO anos (id, modelo_id, nome) VALUES ('" . $ano . "', " . $modelo . ", '" . $data->{$key}->{"modelos"}->{$modelo}->{"anos"}->{$ano} . "');" . "\n";
         }
     }
 }
