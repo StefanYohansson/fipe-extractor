@@ -7,7 +7,7 @@ use lib qw(..);
 use JSON qw( );
 use Data::Dumper;
 
-my $filename = 'veiculos.json';
+my ($filename) = @ARGV;
 
 my $json_text = do {
     open(my $json_fh, "<:encoding(UTF-8)", $filename)

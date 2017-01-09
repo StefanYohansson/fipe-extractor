@@ -6,42 +6,64 @@ var http = require('http');
 var request = require('request');
 
 var cookieJar = request.jar();
+var codigo;
 
-request({
-  uri: "http://veiculos.fipe.org.br/",
-  jar: cookieJar
-}, function(err, status, bd) {
+var files = {
+  1: {
+    filename: "carros"
+  },
+  2: {
+    filename: "motos"
+  },
+  3: {
+    filename: "caminhoes"
+  }
+};
+
+Object.keys(files).map(tipo => {
   request({
     method: "POST",
-    uri: 'http://veiculos.fipe.org.br/api/veiculos/ConsultarMarcas',
+    uri: "http://veiculos.fipe.org.br/api/veiculos/ConsultarTabelaDeReferencia",
     jar: cookieJar,
+    json: {},
     headers: {
       Host: "veiculos.fipe.org.br",
-      Referer: "http://veiculos.fipe.org.br/",
+      Referer: "http://veiculos.fipe.org.br/"
+    }
+  }, function(err, status, bd) {
+    codigo = bd[0]["Codigo"];
+
+    request({
+      method: "POST",
+      uri: 'http://veiculos.fipe.org.br/api/veiculos/ConsultarMarcas',
+      jar: cookieJar,
+      headers: {
+        Host: "veiculos.fipe.org.br",
+        Referer: "http://veiculos.fipe.org.br/",
+      },
+      json: {
+        codigoTabelaReferencia: codigo,
+        codigoTipoVeiculo: tipo
+      }
     },
-    json: {
-      codigoTabelaReferencia: 198,
-      codigoTipoVeiculo: 1
-    }
-  },
-  function(er, st, body) {
-    if(er) {
-      console.log("ERR: ", er);
-      return;
-    }
+      function(er, st, body) {
+        if(er) {
+          console.log("ERR: ", er);
+          return;
+        }
 
-    if(st.statusCode != 200) {
-      console.log('Returned: ', st.statusCode);
-      console.log(body);
-      return;
-    }
+        if(st.statusCode != 200) {
+          console.log('Returned: ', st.statusCode);
+          console.log(body);
+          return;
+        }
 
-    loadAndExport(body);
-  });
-
+        loadAndExport(body, tipo, files[tipo]);
+      });
+  }); 
 });
 
-var loadAndExport = (marcas) => {
+var loadAndExport = (marcas, tipo, fileInfo) => {
   var modelos = [];
   var modelos_ano = {};
   var marcas_list = {};
@@ -69,8 +91,8 @@ var loadAndExport = (marcas) => {
           Referer: "http://veiculos.fipe.org.br/",
         },
         json: {
-	  codigoTipoVeiculo: 1,
-	  codigoTabelaReferencia: 198,
+	  codigoTipoVeiculo: tipo,
+	  codigoTabelaReferencia: codigo,
 	  codigoModelo: '',
 	  codigoMarca: marca,
 	  ano: '',
@@ -97,8 +119,8 @@ var loadAndExport = (marcas) => {
           Referer: "http://veiculos.fipe.org.br/",
         },
 	json: {
-	  codigoTipoVeiculo: 1,
-	  codigoTabelaReferencia: 198,
+	  codigoTipoVeiculo: tipo,
+	  codigoTabelaReferencia: codigo,
 	  codigoModelo: modelo,
 	  codigoMarca: marca,
 	  ano: '',
@@ -122,8 +144,9 @@ var loadAndExport = (marcas) => {
     });
   }; 
 
-  function export_fip(veiculos) {
-    saveData(veiculos, 'veiculos.json');
+  function export_fip(veiculos, fileInfo) {
+    var filename = fileInfo['filename'];
+    saveData(veiculos, `${filename}.json`);
   }
 
   function main() {
@@ -177,7 +200,7 @@ var loadAndExport = (marcas) => {
   }
 
   main().then((veiculos) => {
-    export_fip(veiculos);
+    export_fip(veiculos, fileInfo);
     console.log('Tabela Fipe exportada com sucesso.');
   });
 };

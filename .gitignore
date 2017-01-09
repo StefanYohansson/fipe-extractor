@@ -1,4 +1,15 @@
 node_modules/
 
+# TEST FILES
+
 veiculos.sql
 veiculos.json
+
+carros.sql
+carros.json
+
+motos.sql
+motos.json
+
+caminhoes.sql
+caminhoes.json
