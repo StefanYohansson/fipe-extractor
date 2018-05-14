@@ -3,6 +3,10 @@ FIPE Extractor
 
 Ferramenta para exportar a tabela fipe do site: http://veiculos.fipe.org.br/
 
+## Baixando apenas o JSON
+
+Você pode encontrar os json exportados dia a dia em: https://sadfeelings.me/fipe/fipe.tar.gz
+
 ## Requerimentos
 
 * Perl (opcional)
